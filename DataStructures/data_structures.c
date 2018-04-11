@@ -2,6 +2,9 @@
 /*As estruturas de dados utilizadas virão a partir das descrições
 encontradas em data_structures.h e das funções em data_structures.c.*/
 // leftrotate function definition
+
+#include data_structures.h
+
 #define LEFTROTATE(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 
 
@@ -110,7 +113,7 @@ static uint32_t reduced_md5(uint8_t *initial_msg, size_t initial_len) {
 
 
             uint32_t f, g;
- 
+
              if (i < 16) {
                 f = (b & c) | ((~b) & d);
                 g = i;
@@ -153,5 +156,41 @@ static uint32_t reduced_md5(uint8_t *initial_msg, size_t initial_len) {
     return (h0^h1^h2^h3)%HASHTABLE_SIZE;
 
  }
+
+ static void list_add_item(List *lista, void *item)
+ {
+  struct _list_node *current = lista->items;
+  lista->size++;
+  if (!current)
+  {
+    lista->items = (struct _list_node *) calloc(1, sizeof(_list_node));
+    current = lista->items;
+  } else {
+    while (current->next)
+      current = current->next;
+    current->next = (struct _list_node *) calloc(1, sizeof(_list_node));
+    current->next->prev = current;
+    current = current->next;
+  }
+  current->item = item;
+}
+
+static List* list_create()
+{
+  return (List*) calloc(1, sizeof(List));
+}
+
+static Small_Hashtable *hashtable_create()
+{
+  return (Small_Hashtable*) calloc(1, sizeof(Small_Hashtable));
+}
+
+static void hashtable_add(Small_Hashtable *hashtable, )
+
+/*Public functions*/
+void professor_novo(Professores *professores, char nome[], char login[], uint8_t senha[])
+{
+
+}
 
  #endif

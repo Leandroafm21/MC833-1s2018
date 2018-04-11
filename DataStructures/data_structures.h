@@ -26,13 +26,14 @@ typedef struct {
   List items[HASHTABLE_SIZE];
 } Small_Hashtable
 
+
 //Específicos
-typedef struct _aluno_dados {
+/*typedef struct _aluno_dados {
   char nome[NOME_LEN];
   char login[NOME_LEN];
   uint8_t senha[32];
   List disciplinas_cursadas;
-} Aluno;
+} Aluno;*/
 
 typedef struct _professor {
   char nome[NOME_LEN];
@@ -56,16 +57,15 @@ typedef (Small_Hashtable) Disciplinas;
 //Funções de acesso
 
 //Professor
-extern Professor *professor_novo(char nome[], char login[], uint8_t senha[]);
-extern void professor_adiciona_disciplina(Professor *professor, Disciplina *disciplina);
+extern void professor_novo(Professores *professores, char nome[], char login[], uint8_t senha[]);
 extern Professor *professor_autentica()(Professores *professores, char login[], uint8_t senha[]);
 
-
-//Alunos
-extern Aluno *aluno_novo(char nome[], char login[], uint8_t senha[]);
-extern void aluno_adiciona_disciplina(Aluno *aluno, Disciplina *disciplina);
-
 //Disciplinas
-extern Disciplina *disciplina_novo(char codigo[], char nome[], char ementa[]);
+extern Disciplina * disciplina_obtem_por_codigo(Disciplinas *disciplinas, char codigo[]);
+extern void disciplina_novo(Disciplinas *disciplinas, char codigo[], char nome[], char ementa[], Professor *professor);
+extern char* disciplina_obtem_texto(Disciplina *disciplina);
+extern void disciplina_atualiza_texto(Disciplina *disciplina, char texto[], Professor professor);
+extern char *disciplina_obtem_ementa(Disciplina *disciplina);
+extern void disciplina_atualiza_ementa(Disciplina *disciplina, char texto[], Professor professor);
 
 #endif
