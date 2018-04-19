@@ -6,7 +6,7 @@
 #endif
 
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 16384
 #endif
 
 #ifndef COMMAND_SIZE
