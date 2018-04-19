@@ -1,24 +1,29 @@
 // Client side C/C++ program to demonstrate Socket programming
-#include <stdio.h>
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <netinet/in.h>
-#include <string.h>
 #include "user_interface.h"
 
-#define PORT 8080
+#define IP_SIZE 16
 
 int main(int argc, char const *argv[]) {
     struct sockaddr_in address;
+    char ip[IP_SIZE];
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
     char buffer[BUFFER_SIZE];
 
-    int closed;
+    int closed, finished;
     char user_type;
     char teacher_password[PWD_SIZE];
     int try_number;
-    int finished;
+
+    if (argc < 3) {
+        printf("Usage: ./client <server IP> <port number>\n");
+        exit(EXIT_FAILURE);
+    }
+
+    strcpy(ip, argv[1]);
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
@@ -28,12 +33,8 @@ int main(int argc, char const *argv[]) {
     memset(&serv_addr, '0', sizeof(serv_addr));
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        printf("\nInvalid address/ Address not supported \n");
-        return -1;
-    }
+    serv_addr.sin_port = htons(atoi(argv[2]));
+    serv_addr.sin_addr.s_addr = inet_addr(ip);
 
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         printf("\nConnection Failed \n");
