@@ -1,6 +1,7 @@
 // Client side C/C++ program to demonstrate Socket programming
-#include <sys/socket.h>
 #include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include "user_interface.h"
 
@@ -17,6 +18,7 @@ int main(int argc, char const *argv[]) {
     char user_type;
     char teacher_password[PWD_SIZE];
     int try_number;
+    struct timeval tv1, tv2, tv3, tv4;
 
     if (argc < 3) {
         printf("Usage: ./client <server IP> <port number>\n");
@@ -63,7 +65,15 @@ int main(int argc, char const *argv[]) {
                 /* if (strcmp(buffer, "authorized") == 0) { */
                     printf("Login was successful. ");
                     while (teacher_terminal(buffer) >= 0) {
+                        gettimeofday(&tv1, NULL);
                         send(sock, buffer, strlen(buffer), 0);
+                        gettimeofday(&tv2, NULL);
+                        clear_buffer(buffer, BUFFER_SIZE);
+                        gettimeofday(&tv3, NULL);
+                        valread = read(sock, buffer, 16384);
+                        gettimeofday(&tv4, NULL);
+                        printf("%s\n", buffer);
+                        printf("<Tempo de Execucao: %ld microseconds>\n", (tv2.tv_usec - tv1.tv_usec) + (tv4.tv_usec - tv3.tv_usec));
                         clear_buffer(buffer, BUFFER_SIZE);
                     }
                     finished = 1;
@@ -83,7 +93,11 @@ int main(int argc, char const *argv[]) {
 
             printf("Welcome, student!\n");
             while (student_terminal(buffer) >= 0) {
+
                 send(sock, buffer, strlen(buffer), 0);
+                clear_buffer(buffer, BUFFER_SIZE);
+                valread = read(sock, buffer, 16384);
+                printf("%s\n", buffer);
                 clear_buffer(buffer, BUFFER_SIZE);
             }
         }
