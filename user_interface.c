@@ -89,7 +89,8 @@ void get_subject_information(char *subject) {
     printf(">> ");
     scanf(" %[^\n]s", schedule);
 
-    strcpy(subject, code);
+    strcpy(subject, "_");
+    strcat(subject, code);
     strcat(subject, "_");
     strcat(subject, title);
     strcat(subject, "_");
