@@ -71,12 +71,17 @@ int parse_command(char *command, char *argument) {
 
 void get_subject_information(char *subject) {
     char code[CODE_SIZE];
+    char title[TITLE_SIZE];
     char syllabus[SYLLABUS_SIZE];
     char schedule[SCHEDULE_SIZE];
+    int i;
 
     printf("  Enter the subject code:\n");
     printf(">> ");
     scanf(" %[^\n]s", code);
+    printf("  Enter the subject title:\n");
+    printf(">> ");
+    scanf(" %[^\n]s", title);
     printf("  Enter the subject syllabus:\n");
     printf(">> ");
     scanf(" %[^\n]s", syllabus);
@@ -85,10 +90,18 @@ void get_subject_information(char *subject) {
     scanf(" %[^\n]s", schedule);
 
     strcpy(subject, code);
-    strcat(subject, "\n");
+    strcat(subject, "_");
+    strcat(subject, title);
+    strcat(subject, "_");
     strcat(subject, syllabus);
-    strcat(subject, "\n");
+    strcat(subject, "_");
     strcat(subject, schedule);
+
+    for (i = 0; i < strlen(subject); i++) {
+        if (subject[i] == '_') {
+            subject[i] = '\0';
+        }
+    }
 }
 
 void get_next_class_message(char *message) {
@@ -146,7 +159,9 @@ int teacher_terminal(char *buffer) {
     }
     else if (strcmp(command, "info") == 0) {
         if (strcmp(argument, "all") == 0) {
+            printf("Info all\n");
             buffer[0] = INFO_ALL;
+            printf("buffer = %s\n", buffer);
         }
         else {
             buffer[0] = INFO;
@@ -163,8 +178,10 @@ int teacher_terminal(char *buffer) {
         return 0;
     }
     else if (strcmp(command, "next") == 0) {
+        printf("Next MC102\n");
         buffer[0] = NEXT;
         strcat(buffer, argument);
+        printf("buffer = %s\n", buffer);
         return 0;
     }
     else if (strcmp(command, "exit") == 0) {

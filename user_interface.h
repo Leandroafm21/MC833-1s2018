@@ -17,8 +17,12 @@
 #define CODE_SIZE 6
 #endif
 
+#ifndef TITLE_SIZE
+#define TITLE_SIZE 64
+#endif
+
 #ifndef SYLLABUS_SIZE
-#define SYLLABUS_SIZE 434
+#define SYLLABUS_SIZE 370
 #endif
 
 #ifndef SCHEDULE_SIZE
