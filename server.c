@@ -9,30 +9,33 @@
 #include<pthread.h> //for threading , link with lpthread
 #include "protocol_messages.h"
 #include "server.h"
+#include "protocol.h"
 
 void *connection_handler(void *socket_desc)
 {
-    int sock = *(int*) socket_desc;
+    Data *data = (Data*) socket_desc;
+
     int read_size;
     char server_message[BUFFER_SIZE], client_message[BUFFER_SIZE];
 
     strcpy(server_message, "HELLO");
 
-    write(sock, server_message, strlen(server_message));
-    while ((read_size = recv(sock, client_message, BUFFER_SIZE, 0)) > 0)
+    //write(data->client_sock, server_message, strlen(server_message));
+    while ((read_size = recv(data->client_sock, client_message, BUFFER_SIZE, 0)) > 0)
     {
-        //Do logic
-        write(sock, server_message, strlen(server_message));
+        process_message(client_message, data, server_message);
+        write(data->client_sock, server_message, strlen(server_message));
     }
 
     return 0;
 
 }
 
-int server_start_listening()
+int server_start_listening(Disciplinas *disc)
 {
     int socket_desc, client_sock, c;
     struct sockaddr_in server, client;
+    Data *data;
 
     //Preparing stuff
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -53,8 +56,13 @@ int server_start_listening()
     pthread_t thread_id;
     while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)))
     {
-        if (pthread_create(&thread_id, NULL, connection_handler, (void*) &client_sock) < 0)
+        data = malloc(sizeof(Data));
+        data->autenticado = 0;
+        data->disc = disc;
+        data->client_sock = client_sock;
+        if (pthread_create(&thread_id, NULL, connection_handler, (void*) data) < 0)
         {
+            free(data);
             return -3;
         }
     }
