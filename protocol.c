@@ -69,10 +69,10 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
             break;
 
         case REGISTER_SUBJECT:
+            server_message[0] = (char) OPERATION_NOT_ALLOWED;
+            server_message[1] = 0;
             if (!data->autenticado)
             {
-                server_message[0] = (char) OPERATION_NOT_ALLOWED;
-                server_message[1] = 0;
                 return -1;
             }
 
