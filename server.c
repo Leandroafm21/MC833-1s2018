@@ -1,78 +1,73 @@
-// Server side C/C++ program to demonstrate Socket programming
-#include <stdio.h>
-#include <sys/socket.h>
 #include <stdlib.h>
-#include <netinet/in.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <pthread.h>
+#include "protocol_messages.h"
+#include "server.h"
+#include "protocol.h"
 
-#define PORT 8080
+void clear_buffer(char *buffer, int size)
+{
+    int i;
+    for (i = 0; i < size; i++)
+        buffer[i] = 0;
+}
 
-int main(int argc, char const *argv[]) {
-    int server_fd, new_socket, valread;
-    struct sockaddr_in address;
-    int opt = 1;
-    int addrlen = sizeof(address);
-    char buffer[1024] = {0};
-    char *hello = "Hello from server";
-    int pid;
+void *connection_handler(void *socket_desc)
+{
+    Data *data = (Data*) socket_desc;
 
-    // Creating socket file descriptor
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
+    int read_size;
+    char server_message[BUFFER_SIZE], client_message[BUFFER_SIZE];
+
+    while ((read_size = recv(data->client_sock, client_message, BUFFER_SIZE, 0)) > 0)
+    {
+        process_message(client_message, data, server_message);
+        write(data->client_sock, server_message, strlen(server_message));
+        clear_buffer(client_message, BUFFER_SIZE);
+        clear_buffer(server_message, BUFFER_SIZE);
     }
 
-    bzero((char *) &address, addrlen);
+    return 0;
+}
 
-    // Forcefully attaching socket to the port 8080
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
-                                                  &opt, sizeof(opt))) {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
-    }
+int server_start_listening(Disciplinas *disc)
+{
+    int socket_desc, client_sock, c;
+    struct sockaddr_in server, client;
+    Data *data;
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_desc == -1)
+        return -1;
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(PORT);
 
-    // Forcefully attaching socket to the port 8080
-    if (bind(server_fd, (struct sockaddr *)&address,
-                                 sizeof(address)) < 0) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
+    if (bind(socket_desc, (struct sockaddr*)&server, sizeof(server)) < 0)
+        return -2;
 
-    if (listen(server_fd, 10) < 0) {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
+    listen(socket_desc, MAXQUEUELEN);
 
-    while(1) {
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
-                           (socklen_t*)&addrlen)) < 0) {
-            perror("accept");
-            exit(EXIT_FAILURE);
-        }
-
-        printf("Connected. Forking...\n");
-
-        pid = fork();
-        if (pid < 0) {
-            perror("error on new  process creation");
-            exit(EXIT_FAILURE);
-        }
-
-        if (pid == 0) {
-            close(server_fd);
-            while(1) {
-                bzero((char *) &address, addrlen);
-                valread = read(new_socket, buffer, 1024);
-                printf("%s\n", buffer);
-                send(new_socket, hello, strlen(hello), 0);
-                printf("Hello message sent\n");
-            }
+    c = sizeof(struct sockaddr_in);
+    pthread_t thread_id;
+    while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)))
+    {
+        data = malloc(sizeof(Data));
+        data->autenticado = 0;
+        data->disc = disc;
+        data->client_sock = client_sock;
+        if (pthread_create(&thread_id, NULL, connection_handler, (void*) data) < 0)
+        {
+            free(data);
+            return -3;
         }
     }
+
+    if (client_sock < 0)
+        return -4;
 
     return 0;
 }

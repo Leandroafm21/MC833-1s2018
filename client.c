@@ -1,4 +1,3 @@
-// Client side C/C++ program to demonstrate Socket programming
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -59,10 +58,8 @@ int main(int argc, char const *argv[]) {
                 send(sock, buffer, strlen(buffer), 0);
                 clear_buffer(buffer, BUFFER_SIZE);
 
-                /* Resposta do servidor pra senha enviada, remover if comentado abaixo */
                 valread = read(sock, buffer, 1024);
-                if (1) {
-                /* if (strcmp(buffer, "authorized") == 0) { */
+                if (buffer[0] == -AUTHENTICATION_SUCCESS) {
                     printf("Login was successful. ");
                     while (teacher_terminal(buffer) >= 0) {
                         gettimeofday(&tv1, NULL);
@@ -72,7 +69,19 @@ int main(int argc, char const *argv[]) {
                         gettimeofday(&tv3, NULL);
                         valread = read(sock, buffer, 16384);
                         gettimeofday(&tv4, NULL);
-                        printf("%s\n", buffer);
+
+                        if (buffer[0] == REGISTER_SUBJECT_SUCCESS) {
+                            printf("Successfully registered subject.\n");
+                        }
+                        else if (buffer[0] == REGISTER_MESSAGE_SUCCESS) {
+                            printf("Succesfully registered next-class message.\n");
+                        }
+                        else if (buffer[0] == OPERATION_NOT_ALLOWED || buffer[0] == INVALID_REQUEST) {
+                            printf("Something wrong happened.\n");
+                        }
+                        else {
+                            printf("%s\n", buffer);
+                        }
                         printf("<Tempo de Execucao: %ld microseconds>\n", (tv2.tv_usec - tv1.tv_usec) + (tv4.tv_usec - tv3.tv_usec));
                         clear_buffer(buffer, BUFFER_SIZE);
                     }

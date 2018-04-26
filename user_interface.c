@@ -1,5 +1,13 @@
 #include "user_interface.h"
 
+void clear_buffer(char *buffer, int size)
+{
+    int i;
+
+    for (i = 0; i < size; i++)
+        buffer[i] = 0;
+}
+
 char get_user() {
     char type = '\0';
 
@@ -66,6 +74,32 @@ int parse_command(char *command, char *argument) {
     while (command[i] != '\0') argument[j++] = command[i++];
     argument[j] = '\0';
 
+    if (strcmp(command, "register") == 0) {
+        if (strcmp(argument, "subject") != 0) {
+            return -1;
+        }
+    }
+    else if (strcmp(command, "list") == 0) {
+        if (strcmp(argument, "subjects") != 0) {
+            return -1;
+        }
+    }
+    else if (strcmp(command, "info") == 0) {
+        if (strcmp(argument, "all") != 0 && strlen(argument) != 5) {
+            return -1;
+        }
+    }
+    else if (strcmp(command, "exit") == 0) {
+        if (strcmp(argument, "system") != 0) {
+            return -1;
+        }
+    }
+    else if (strcmp(command, "syllabus") == 0 || strcmp(command, "message") == 0 || strcmp(command, "next") == 0) {
+        if (strlen(argument) != 5) {
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -74,6 +108,7 @@ void get_subject_information(char *subject) {
     char title[TITLE_SIZE];
     char syllabus[SYLLABUS_SIZE];
     char schedule[SCHEDULE_SIZE];
+    char separator[1];
     int i;
 
     printf("  Enter the subject code:\n");
@@ -89,14 +124,16 @@ void get_subject_information(char *subject) {
     printf(">> ");
     scanf(" %[^\n]s", schedule);
 
-    strcpy(subject, "_");
+    separator[0] = 254;
+    strcpy(subject, separator);
     strcat(subject, code);
-    strcat(subject, "_");
+    strcat(subject, separator);
     strcat(subject, title);
-    strcat(subject, "_");
+    strcat(subject, separator);
     strcat(subject, syllabus);
-    strcat(subject, "_");
+    strcat(subject, separator);
     strcat(subject, schedule);
+    strcat(subject, separator);
 
     for (i = 0; i < strlen(subject); i++) {
         if (subject[i] == '_') {
@@ -160,9 +197,7 @@ int teacher_terminal(char *buffer) {
     }
     else if (strcmp(command, "info") == 0) {
         if (strcmp(argument, "all") == 0) {
-            printf("Info all\n");
             buffer[0] = INFO_ALL;
-            printf("buffer = %s\n", buffer);
         }
         else {
             buffer[0] = INFO;
@@ -171,7 +206,7 @@ int teacher_terminal(char *buffer) {
         return 0;
     }
     else if (strcmp(command, "message") == 0) {
-        buffer[0] = MESSAGE;
+        buffer[0] = CHANGE_MESSAGE;
         strcat(buffer, argument);
         clear_buffer(class_message, MESSAGE_SIZE);
         get_next_class_message(class_message);
@@ -179,10 +214,8 @@ int teacher_terminal(char *buffer) {
         return 0;
     }
     else if (strcmp(command, "next") == 0) {
-        printf("Next MC102\n");
         buffer[0] = NEXT;
         strcat(buffer, argument);
-        printf("buffer = %s\n", buffer);
         return 0;
     }
     else if (strcmp(command, "exit") == 0) {
@@ -248,14 +281,5 @@ int student_terminal(char *buffer) {
         return -1;
     }
 
-    /* isso pode ser um problema... */
     return 0;
-}
-
-void clear_buffer(char *buffer, int size) {
-    int i;
-
-    for (i = 0; i < size; i++) {
-        buffer[i] = '\0';
-    }
 }
