@@ -8,7 +8,7 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
 {
     char *server_p = server_message;
     char *client_p = client_message+1;
-    char login[NOME_LEN], senha[PWD_SIZE];
+    char login[TITLE_SIZE], senha[PWD_SIZE];
     struct _list_node *disc_node;
     int i = 0;
 
@@ -96,9 +96,9 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
                 return -1;
             }
 
-            char codigo_disciplina[CODIGO_LEN];
-            memcpy(codigo_disciplina, client_message+1, CODIGO_LEN-1);
-            codigo_disciplina[CODIGO_LEN-1] = 0;
+            char codigo_disciplina[CODE_SIZE];
+            memcpy(codigo_disciplina, client_message+1, CODE_SIZE-1);
+            codigo_disciplina[CODE_SIZE-1] = 0;
 
             disc = disciplina_obtem_por_codigo(data->disc, codigo_disciplina);
             if (!disc) {
@@ -107,7 +107,7 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
                 return -1;
             }
 
-            strncpy(disc->texto_aula, client_message+CODIGO_LEN, MAX_LEN);
+            strncpy(disc->texto_aula, client_message+CODE_SIZE, MESSAGE_SIZE);
             server_message[0] = (char) REGISTER_MESSAGE_SUCCESS;
             server_message[1] = 0;
             return 0;
@@ -116,7 +116,7 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
             disc_node = data->disc->items;
             while (disc_node) {
                 disc = (Disciplina*) disc_node->item;
-                server_p += sprintf(server_p, "Código: %s\nNome: %s\nHorário: %s\nMensage: %s\n\n", disc->codigo, disc->nome,
+                server_p += sprintf(server_p, "Código: %s\nNome: %s\nHorário: %s\nMensagem: %s\n\n", disc->codigo, disc->nome,
                                     disc->horario, disc->texto_aula);
                 disc_node = disc_node->next;
             }

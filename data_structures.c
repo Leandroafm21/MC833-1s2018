@@ -29,10 +29,10 @@ static List* list_create()
 void disciplina_novo(Disciplinas *disciplinas, char codigo[], char nome[], char ementa[], char horario[])
 {
     Disciplina *disc = calloc (1, sizeof(Disciplina));
-    strncpy(disc->codigo, codigo, CODIGO_LEN);
-    strncpy(disc->nome, nome, NOME_LEN);
-    strncpy(disc->ementa, ementa, MAX_LEN);
-    strncpy(disc->horario, horario, SCHEDULE_LEN);
+    strncpy(disc->codigo, codigo, CODE_SIZE);
+    strncpy(disc->nome, nome, TITLE_SIZE);
+    strncpy(disc->ementa, ementa, SYLLABUS_SIZE);
+    strncpy(disc->horario, horario, SCHEDULE_SIZE);
     list_add_item(disciplinas, (void*)disc);
 }
 
@@ -43,7 +43,7 @@ Disciplina * disciplina_obtem_por_codigo(Disciplinas *disciplinas, char codigo[]
     while (node)
     {
         disc = (Disciplina *)node->item;
-        if (!strncmp(disc->codigo, codigo, CODIGO_LEN-1))
+        if (!strncmp(disc->codigo, codigo, CODE_SIZE-1))
             return disc;
         node = node->next;
     }
@@ -54,22 +54,4 @@ Disciplinas *disciplina_cria_lista()
 {
     Disciplinas *disc = list_create();
     return disc;
-}
-
-void disciplina_adiciona_em_lista(List *lista, Disciplina *disc)
-{
-    lista->size++;
-    struct _list_node *new = calloc(1, sizeof(struct _list_node));
-    new->item = disc;
-    new->next = NULL;
-
-    struct _list_node *node = lista->items;
-    if (!node) {
-        lista->items = new;
-        new->prev = NULL;
-    } else {
-        while (node->next) node = node->next;
-        node->next = new;
-        new->prev = node->next;
-    }
 }
