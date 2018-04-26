@@ -18,6 +18,12 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
     int i = 0;
 
     Disciplina *disc;
+
+    //Ajustada inicial para melhor aproveitamento das funções de string:
+    for (i = 0; i < BUFFER_SIZE, client_message[i]; i++)
+        if (client_message[i] == (char)254)
+            client_message[i] = (char) 0;
+
     switch (client_message[0])
     {
         case LIST_SUBJECTS:
@@ -72,11 +78,11 @@ int process_message(char client_message[], Data *data, char server_message[BUFFE
 
             char *codigo, *titulo, *ementa, *horario;
             codigo = client_message+2;
-            for (titulo = codigo; titulo; titulo++);
+            for (titulo = codigo; *titulo; titulo++);
             titulo++;
-            for (ementa = titulo; ementa; ementa++);
+            for (ementa = titulo; *ementa; ementa++);
             ementa++;
-            for (horario = ementa; horario; horario++);
+            for (horario = ementa; *horario; horario++);
             horario++;
 
             disciplina_novo(data->disc, codigo, titulo, ementa, horario);

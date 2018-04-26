@@ -24,21 +24,6 @@ typedef struct {
 } List;
 
 
-//Específicos
-/*typedef struct _aluno_dados {
-  char nome[NOME_LEN];
-  char login[NOME_LEN];
-  char senha[32];
-  List disciplinas_cursadas;
-} Aluno;*/
-
-/*typedef struct _professor {
-    char nome[NOME_LEN];
-    char login[NOME_LEN];
-    char senha[PWD_SIZE];
-    List disciplinas_ministradas;
-} Professor;*/
-
 typedef struct _disciplina_dados {
     char codigo[CODIGO_LEN];
     char nome[NOME_LEN];
@@ -50,15 +35,6 @@ typedef struct _disciplina_dados {
 
 typedef List Professores;
 typedef List Disciplinas;
-
-//Funções de acesso
-
-/*
-//Professor
-void professor_novo(Professores *professores, char nome[], char login[], char senha[]);
-Professor *professor_autentica(Professores *professores, char login[], char senha[]);
-Professores *professor_cria_lista();
-void professor_deleta_lista(Professores *professores);*/
 
 //Disciplinas
 Disciplina * disciplina_obtem_por_codigo(Disciplinas *disciplinas, char codigo[]);

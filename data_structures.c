@@ -31,47 +31,6 @@ static List* list_create()
     return (List*) calloc(1, sizeof(List));
 }
 
-
-
-/*Public functions*/
-/*void professor_novo(Professores *professores, char nome[], char login[], char senha[])
-{
-    Professor *prof = calloc(1, sizeof(Professor));
-    strncpy(prof->nome, nome, NOME_LEN);
-    strncpy(prof->login, login, NOME_LEN);
-    memcpy(prof->senha, senha, PWD_SIZE); //TODO: Alterar o tamanho da senha e colocar em um define
-    list_add_item(professores, (void*)prof);
-}
-
-Professor * professor_autentica(Professores *professores, char login[], char senha[])
-{
-    struct _list_node *node = professores->items;
-    Professor *prof;
-    int min = strlen(senha) < PWD_SIZE? strlen(senha) : PWD_SIZE;
-    while (node) {
-        prof = (Professor *)node->item;
-        if (!strncmp(login, prof->login, NOME_LEN) && !strncmp(senha, prof->senha, PWD_SIZE))
-            return prof;
-        node = node->next;
-    }
-    return NULL;
-}
-
-Professores *professor_cria_lista() {
-    Professores *prof = list_create();
-    return prof;
-}
-
-void professor_deleta_lista(Professores *professores)
-{
-//    struct _list_node *current = professores->items;
-//    while (current)
-//    {
-//        free(current->item);
-//    }
-//    free(professores);
-}*/
-
 void disciplina_novo(Disciplinas *disciplinas, char codigo[], char nome[], char ementa[], char horario[])
 {
     Disciplina *disc = calloc (1, sizeof(Disciplina));

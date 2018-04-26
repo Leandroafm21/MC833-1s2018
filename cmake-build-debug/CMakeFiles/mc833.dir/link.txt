@@ -1,0 +1,1 @@
+/usr/bin/cc   -pthread -g   CMakeFiles/mc833.dir/main.c.o CMakeFiles/mc833.dir/data_structures.c.o CMakeFiles/mc833.dir/server.c.o CMakeFiles/mc833.dir/protocol.c.o  -o mc833 

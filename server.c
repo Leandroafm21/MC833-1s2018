@@ -11,6 +11,12 @@
 #include "server.h"
 #include "protocol.h"
 
+static void clear_buffer(char *buffer, int size)
+{
+    for (int i = 0; i < size; i++)
+        buffer[i] = 0;
+}
+
 void *connection_handler(void *socket_desc)
 {
     Data *data = (Data*) socket_desc;
@@ -20,11 +26,11 @@ void *connection_handler(void *socket_desc)
 
     strcpy(server_message, "HELLO");
 
-    //write(data->client_sock, server_message, strlen(server_message));
     while ((read_size = recv(data->client_sock, client_message, BUFFER_SIZE, 0)) > 0)
     {
         process_message(client_message, data, server_message);
         write(data->client_sock, server_message, strlen(server_message));
+        clear_buffer(server_message, BUFFER_SIZE);
     }
 
     return 0;
