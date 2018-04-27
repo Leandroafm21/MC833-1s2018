@@ -12,6 +12,7 @@ typedef struct {
     int client_sock;
 } Data;
 
+/* Processa uma mensagem recebida do cliente, consultando o banco de dados interno e retornando a resposta desejada */
 int process_message(char client_message[], Data *data, char server_message[BUFFER_SIZE]);
 
 #endif //MC833_PROTOCOL_H

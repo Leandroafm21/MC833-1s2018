@@ -19,6 +19,7 @@ int main(int argc, char const *argv[]) {
     int try_number;
     struct timeval tv1, tv2, tv3, tv4;
 
+    /* Configuracoes de socket */
     if (argc < 3) {
         printf("Usage: ./client <server IP> <port number>\n");
         exit(EXIT_FAILURE);
@@ -42,14 +43,17 @@ int main(int argc, char const *argv[]) {
         return -1;
     }
 
+    /* Inicio da interface */
     clear_buffer(buffer, BUFFER_SIZE);
     closed = 0;
     while (closed == 0) {
         printf("Welcome!\n");
+        /* Obtencao de usuario */
         user_type = get_user();
         if (user_type == 't') {
             try_number = 0;
             finished = 0;
+            /* Autenticacao de professor*/
             while (finished == 0 && get_teacher_password(teacher_password, try_number++) >= 0) {
                 if (build_message(buffer, user_type, teacher_password) < 0) {
                     printf("Message is too big, buffer will overflow!\n");
@@ -61,6 +65,7 @@ int main(int argc, char const *argv[]) {
                 valread = read(sock, buffer, 1024);
                 if (buffer[0] == -AUTHENTICATION_SUCCESS) {
                     printf("Login was successful. ");
+                    /* Obtencao de comandos para o servidor, ate finalizado, no caso do professor */
                     while (teacher_terminal(buffer) >= 0) {
                         gettimeofday(&tv1, NULL);
                         send(sock, buffer, strlen(buffer), 0);
@@ -101,8 +106,8 @@ int main(int argc, char const *argv[]) {
             clear_buffer(buffer, BUFFER_SIZE);
 
             printf("Welcome, student!\n");
+            /* Obtencao de comandos para o servidor, ate finalizado, no caso do aluno */
             while (student_terminal(buffer) >= 0) {
-
                 send(sock, buffer, strlen(buffer), 0);
                 clear_buffer(buffer, BUFFER_SIZE);
                 valread = read(sock, buffer, 16384);
@@ -111,6 +116,7 @@ int main(int argc, char const *argv[]) {
             }
         }
 
+        /* Finalizacao */
         printf("System is now closing...\n");
         closed = 1;
         clear_buffer(buffer, BUFFER_SIZE);
