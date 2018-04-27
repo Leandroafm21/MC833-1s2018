@@ -108,7 +108,6 @@ void get_subject_information(char *subject) {
     char title[TITLE_SIZE];
     char syllabus[SYLLABUS_SIZE];
     char schedule[SCHEDULE_SIZE];
-    char separator[1];
     int i;
 
     printf("  Enter the subject code:\n");
@@ -124,22 +123,28 @@ void get_subject_information(char *subject) {
     printf(">> ");
     scanf(" %[^\n]s", schedule);
 
-    separator[0] = 254;
-    strcpy(subject, separator);
-    strcat(subject, code);
-    strcat(subject, separator);
-    strcat(subject, title);
-    strcat(subject, separator);
-    strcat(subject, syllabus);
-    strcat(subject, separator);
-    strcat(subject, schedule);
-    strcat(subject, separator);
+    printf("Subject vector:\n%s\n", subject);
+    printf("Code: %s\n", code);
+    printf("Title: %s\n", title);
+    printf("Syllabus: %s\n", syllabus);
+    printf("Schedule: %s\n", schedule);
 
-    for (i = 0; i < strlen(subject); i++) {
-        if (subject[i] == '_') {
-            subject[i] = '\0';
-        }
-    }
+    subject[0] = SEPARATOR;
+    subject[1] = '\0';
+    strcat(subject, code);
+    subject[strlen(subject)] = SEPARATOR;
+    subject[strlen(subject)+1] = '\0';
+    strcat(subject, title);
+    subject[strlen(subject)] = SEPARATOR;
+    subject[strlen(subject)+1] = '\0';
+    strcat(subject, syllabus);
+    subject[strlen(subject)] = SEPARATOR;
+    subject[strlen(subject)+1] = '\0';
+    strcat(subject, schedule);
+    subject[strlen(subject)] = SEPARATOR;
+    subject[strlen(subject)+1] = '\0';
+
+    printf("Subject Information:\n%s\n", subject);
 }
 
 void get_next_class_message(char *message) {

@@ -22,6 +22,7 @@
 #define INVALID_REQUEST 131u
 
 // Outros
+#define SEPARATOR 254 // Separador de Informacoes de Disciplinas
 #define DELIMITER 255 // Delimitador de dados
 
 // Tamanhos
