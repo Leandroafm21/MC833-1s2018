@@ -9,8 +9,8 @@
 int main(int argc, char const *argv[]) {
     struct sockaddr_in address;
     char ip[IP_SIZE];
-    int sock = 0, valread;
-    struct sockaddr_in serv_addr;
+    int sock = 0, serverlen, valread;
+    struct sockaddr_in serveraddr;
     char buffer[BUFFER_SIZE];
 
     int closed, finished;
@@ -27,24 +27,25 @@ int main(int argc, char const *argv[]) {
 
     strcpy(ip, argv[1]);
 
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         printf("\n Socket creation error \n");
         return -1;
     }
 
-    memset(&serv_addr, '0', sizeof(serv_addr));
+    memset(&serveraddr, '0', sizeof(serveraddr));
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(atoi(argv[2]));
-    serv_addr.sin_addr.s_addr = inet_addr(ip);
+    serveraddr.sin_family = AF_INET;
+    serveraddr.sin_port = htons(atoi(argv[2]));
+    serveraddr.sin_addr.s_addr = inet_addr(ip);
 
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    if (connect(sock, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) < 0) {
         printf("\nConnection Failed \n");
         return -1;
     }
 
     /* Inicio da interface */
     clear_buffer(buffer, BUFFER_SIZE);
+    serverlen = sizeof(serveraddr);
     closed = 0;
     while (closed == 0) {
         printf("Welcome!\n");
@@ -59,20 +60,23 @@ int main(int argc, char const *argv[]) {
                     printf("Message is too big, buffer will overflow!\n");
                     return -1;
                 }
-                send(sock, buffer, strlen(buffer), 0);
+                sendto(sock, buffer, strlen(buffer), 0,
+                       (struct sockaddr *) &serveraddr, serverlen);
                 clear_buffer(buffer, BUFFER_SIZE);
 
-                valread = read(sock, buffer, 1024);
+                valread = recvfrom(sock, buffer, 1024, 0,
+                                   (struct sockaddr *) &serveraddr, &serverlen);
                 if (buffer[0] == -AUTHENTICATION_SUCCESS) {
                     printf("Login was successful. ");
                     /* Obtencao de comandos para o servidor, ate finalizado, no caso do professor */
                     while (teacher_terminal(buffer) >= 0) {
                         gettimeofday(&tv1, NULL);
-                        send(sock, buffer, strlen(buffer), 0);
+                        sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *) &serveraddr, serverlen);
                         gettimeofday(&tv2, NULL);
                         clear_buffer(buffer, BUFFER_SIZE);
                         gettimeofday(&tv3, NULL);
-                        valread = read(sock, buffer, 16384);
+                        recvfrom(sock, buffer, 16384, 0,
+                                 (struct sockaddr *) &serveraddr, &serverlen);
                         gettimeofday(&tv4, NULL);
 
                         if (buffer[0] == REGISTER_SUBJECT_SUCCESS) {
@@ -102,15 +106,18 @@ int main(int argc, char const *argv[]) {
                 printf("Message is too big, buffer will overflow!\n");
                 return -1;
             }
-            send(sock, buffer, strlen(buffer), 0);
+            sendto(sock, buffer, strlen(buffer), 0,
+                   (struct sockaddr *) &serveraddr, serverlen);
             clear_buffer(buffer, BUFFER_SIZE);
 
             printf("Welcome, student!\n");
             /* Obtencao de comandos para o servidor, ate finalizado, no caso do aluno */
             while (student_terminal(buffer) >= 0) {
-                send(sock, buffer, strlen(buffer), 0);
+                sendto(sock, buffer, strlen(buffer), 0,
+                       (struct sockaddr *) &serveraddr, serverlen);
                 clear_buffer(buffer, BUFFER_SIZE);
-                valread = read(sock, buffer, 16384);
+                valread = recvfrom(sock, buffer, 16384, 0,
+                                   (struct sockaddr *) &serveraddr, &serverlen);
                 printf("%s\n", buffer);
                 clear_buffer(buffer, BUFFER_SIZE);
             }

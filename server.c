@@ -1,19 +1,16 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include "protocol_messages.h"
 #include "server.h"
 #include "protocol.h"
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdio.h>
 
 void clear_buffer(char *buffer, int size)
 {
@@ -82,38 +79,29 @@ int server_start_listening(Disciplinas *disc)
 
 #else
 int server_start_listening(Disciplinas *disc) {
-    int sockfd; /* socket */
-    int portno; /* port to listen on */
-    int clientlen; /* byte size of client's address */
-    struct sockaddr_in serveraddr; /* server's addr */
-    struct sockaddr_in clientaddr; /* client addr */
-    struct hostent *hostp; /* client host info */
-    char client_message[BUFFER_SIZE]; /* message buf */
-    char server_message[BUFFER_SIZE]; /* message buf */
-    char *hostaddrp; /* dotted decimal host addr string */
-    int optval; /* flag value for setsockopt */
-    int n; /* message byte size */
+    int sockfd;
+    int portno;
+    int clientlen;
+    struct sockaddr_in serveraddr;
+    struct sockaddr_in clientaddr;
+    struct hostent *hostp;
+    char client_message[BUFFER_SIZE];
+    char server_message[BUFFER_SIZE];
+    char *hostaddrp;
+    int optval;
+    int n;
     Data data; /*dados de disciplinas e autenticação*/
 
     data.disc = disc;
     data.autenticado = 0;
 
-    /*
-     * socket: create the parent socket
-     */
+    /* Configuracoes de socket */
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    /* setsockopt: Handy debugging trick that lets
-     * us rerun the server immediately after we kill it;
-     * otherwise we have to wait about 20 secs.
-     * Eliminates "ERROR on binding: Address already in use" error.
-     */
+
     optval = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR,
                (const void *) &optval, sizeof(int));
 
-    /*
-     * build the server's Internet address
-     */
     bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -123,20 +111,21 @@ int server_start_listening(Disciplinas *disc) {
              sizeof(serveraddr)) < 0)
         perror("ERROR on binding");
 
-    /*
-     * main loop: wait for a datagram, then echo it
-     */
+    /* Comeca a receber dados */
     clientlen = sizeof(clientaddr);
     while (1) {
         bzero(client_message, BUFFER_SIZE);
         bzero(server_message, BUFFER_SIZE);
         n = recvfrom(sockfd, client_message, BUFFER_SIZE, 0,
                      (struct sockaddr *) &clientaddr, &clientlen);
+        printf("Received: %s\n", client_message);
+        /* Obtencao do cliente que enviou mensagem para enviar resposta */
         hostp = gethostbyaddr((const char *) &clientaddr.sin_addr.s_addr,
                               sizeof(clientaddr.sin_addr.s_addr), AF_INET);
         hostaddrp = inet_ntoa(clientaddr.sin_addr);
         process_message(client_message, &data, server_message);
 
+        printf("Sending: %s\n", server_message);
         n = sendto(sockfd, server_message, strlen(server_message), 0,
                    (struct sockaddr *) &clientaddr, clientlen);
     }
