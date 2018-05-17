@@ -38,11 +38,6 @@ int main(int argc, char const *argv[]) {
     serveraddr.sin_port = htons(atoi(argv[2]));
     serveraddr.sin_addr.s_addr = inet_addr(ip);
 
-    if (connect(sock, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) < 0) {
-        printf("\nConnection Failed \n");
-        return -1;
-    }
-
     /* Inicio da interface */
     clear_buffer(buffer, BUFFER_SIZE);
     serverlen = sizeof(serveraddr);
