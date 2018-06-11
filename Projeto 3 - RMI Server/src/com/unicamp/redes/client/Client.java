@@ -46,7 +46,15 @@ public class Client {
 			pp.dispose();
 			System.out.println("[DEBUG] Teacher Password = " + teacherPassword);
 			try {
-				response = stub.HandleAuthentication(teacherPassword);
+				response = stub.HandleAuthentication(userType + teacherPassword);
+			} catch (Exception e) {
+				System.err.println("Client exception: " + e.toString());
+	            e.printStackTrace();
+			}
+			System.out.println("[DEBUG] Response Received = " + response);
+		} else {
+			try {
+				response = stub.HandleAuthentication(Character.toString(userType));
 			} catch (Exception e) {
 				System.err.println("Client exception: " + e.toString());
 	            e.printStackTrace();
