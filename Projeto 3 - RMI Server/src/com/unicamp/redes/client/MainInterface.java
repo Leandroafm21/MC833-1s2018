@@ -70,13 +70,32 @@ public class MainInterface extends Frame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		boolean keepOpened = false;
 		if (!subjectTextField.getText().isEmpty()) {
-			data = (char) ((int) userOptionsChoices.getSelectedItem().charAt(0)) + subjectTextField.getText();
+			if (subjectTextField.getText().length() != 5
+				|| Character.isDigit(subjectTextField.getText().charAt(2)) == false
+				|| Character.isDigit(subjectTextField.getText().charAt(3)) == false
+				|| Character.isDigit(subjectTextField.getText().charAt(4)) == false) {
+				subjectLabel.setText("Erro na formatação!");
+				subjectLabel.setForeground(Color.RED);
+				subjectTextField.setText("CCDDD");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e2) {
+					System.err.println("Main Interface exception: " + e2.toString());
+					e2.printStackTrace();
+				}
+				subjectLabel.setText("Entre com o código da disciplina:");
+				subjectLabel.setForeground(Color.BLACK);
+				keepOpened = true;
+			} else {
+				data = (char) ((int) userOptionsChoices.getSelectedItem().charAt(0)) + subjectTextField.getText();
+			}
 		} else {
 			data = Character.toString(userOptionsChoices.getSelectedItem().charAt(0));
 		}
 		subjectTextField.setText("");
-		setVisible(false);
+		setVisible(keepOpened);
 	}
 	
 	public String getData() {

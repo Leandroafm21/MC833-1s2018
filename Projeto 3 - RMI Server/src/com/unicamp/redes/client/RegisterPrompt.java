@@ -64,16 +64,35 @@ public class RegisterPrompt extends Frame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		boolean keepOpened = false;
 		if (registerType == 's') {
-			rawData = subjectCodeTextField.getText() + '_' + subjectSyllabusTextField.getText() + '_' + subjectScheduleTextField.getText();
-			subjectCodeTextField.setText("");
-			subjectSyllabusTextField.setText("");
-			subjectScheduleTextField.setText("");
+			if (subjectCodeTextField.getText().length() != 5
+				|| Character.isDigit(subjectCodeTextField.getText().charAt(2)) == false
+				|| Character.isDigit(subjectCodeTextField.getText().charAt(3)) == false
+				|| Character.isDigit(subjectCodeTextField.getText().charAt(4)) == false) {
+				subjectCodeLabel.setText("Erro na formatação!!!");
+				subjectCodeLabel.setForeground(Color.RED);
+				subjectCodeTextField.setText("CCDDD");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e2) {
+					System.err.println("Main Interface exception: " + e2.toString());
+					e2.printStackTrace();
+				}
+				subjectCodeLabel.setText("Entre com o código da disciplina:");
+				subjectCodeLabel.setForeground(Color.BLACK);
+				keepOpened = true;
+			} else {
+				rawData = subjectCodeTextField.getText() + '_' + subjectSyllabusTextField.getText() + '_' + subjectScheduleTextField.getText();
+				subjectCodeTextField.setText("");
+				subjectSyllabusTextField.setText("");
+				subjectScheduleTextField.setText("");
+			}
 		} else {
 			rawData = subjectMessageTextField.getText();
 			subjectMessageTextField.setText("");
 		}
-		setVisible(false);
+		setVisible(keepOpened);
 	}
 	
 	public String getRawData() {
