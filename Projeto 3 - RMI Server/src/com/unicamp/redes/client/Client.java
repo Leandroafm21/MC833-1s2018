@@ -29,7 +29,7 @@ public class Client {
 		
 		UserTypePrompt up = new UserTypePrompt();
 		while (up.isVisible()) {
-			Thread.sleep(1000);
+			Thread.sleep(1);
 		}
 		userType = up.getUserType();
 		up.dispose();
@@ -69,6 +69,19 @@ public class Client {
 			}
 			/* Usuário deu "Ok" */
 			dataToSend = mi.getData();
+			if (dataToSend.charAt(0) == '1') {
+				RegisterPrompt rp = new RegisterPrompt('s');
+				while (rp.isVisible()) {
+					Thread.sleep(1);
+				}
+				dataToSend = dataToSend + rp.getRawData();
+			} else if (dataToSend.charAt(0) == '6') {
+				RegisterPrompt rp = new RegisterPrompt('m');
+				while (rp.isVisible()) {
+					Thread.sleep(1);
+				}
+				dataToSend = dataToSend + rp.getRawData();
+			}
 			System.out.println("[DEBUG] Data to Send = " + dataToSend);
 			Thread.sleep(2000);
 			try {
