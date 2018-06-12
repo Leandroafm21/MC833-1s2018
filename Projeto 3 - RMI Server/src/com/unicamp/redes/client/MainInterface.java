@@ -35,6 +35,7 @@ public class MainInterface extends Frame implements ActionListener {
 			userOptionsChoices.add("6-) Escrever uma mensagem para uma Disciplina");
 		}
 		userOptionsChoices.add("7-) Ver a mensagem de uma Disciplina");
+		userOptionsChoices.add("8-) Sair");
 		userOptionsChoices.addItemListener(
 			new ItemListener() {
 				public void itemStateChanged(ItemEvent ie) {

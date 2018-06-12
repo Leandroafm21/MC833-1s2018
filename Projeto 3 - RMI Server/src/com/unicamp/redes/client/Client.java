@@ -81,6 +81,8 @@ public class Client {
 					Thread.sleep(1);
 				}
 				dataToSend = dataToSend + rp.getRawData();
+			} else if (dataToSend.charAt(0) == '8') {
+				System.exit(1);
 			}
 			System.out.println("[DEBUG] Data to Send = " + dataToSend);
 			Thread.sleep(2000);
