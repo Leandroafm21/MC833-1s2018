@@ -16,6 +16,7 @@ public class Server implements SubjectsDatabase {
 		String[] splitter;
 		System.out.println("Received data: " + data);
 		String output = null;
+		Disciplina disc;
 		char op = data.charAt(0);
 		System.out.println("OP: " + op);
 		switch (op) {
@@ -25,7 +26,7 @@ public class Server implements SubjectsDatabase {
 					output = "FAILED";
 				} else {
 					splitter = data.substring(1).split("_");
-					Disciplina disc = new Disciplina(splitter[0], splitter[1], splitter[2]);
+					disc = new Disciplina(splitter[0], splitter[1], splitter[2]);
 					Disciplina.AddToList(disc);
 					output = "SUCCESS";
 				}
@@ -34,11 +35,18 @@ public class Server implements SubjectsDatabase {
 				output = Disciplina.ListSubjects();
 				break;
 			case '3':
-				output = Disciplina.GetByCodigo(data.substring(1)).getEmenta();
+				disc = Disciplina.GetByCodigo(data.substring(1));
+				if (disc == null)
+					output = "FAILED";
+				else
+					output = disc.getEmenta();
 				break;
 			case '4':
-				Disciplina disc = Disciplina.GetByCodigo(data.substring(1));
-				output = disc.getInfo();
+				disc = Disciplina.GetByCodigo(data.substring(1));
+				if (disc == null)
+					output = "FAILED";
+				else
+					output = disc.getInfo();
 				break;
 			case '5':
 				output = Disciplina.GetInfoAll();
@@ -48,12 +56,21 @@ public class Server implements SubjectsDatabase {
 				{
 						output = "FAILED";
 				} else {
-						Disciplina.GetByCodigo(data.substring(1,6)).AtualizaTextoAula(data.substring(6));
-						output = "SUCCESS";
+						disc = Disciplina.GetByCodigo(data.substring(1,6));
+						if (disc == null)
+							output = "FAILED";
+						else {
+							disc.AtualizaTextoAula(data.substring(6));
+							output = "SUCCESS";
+						}
 				}
 				break;
 			case '7':
-				output = Disciplina.GetByCodigo(data.substring(1)).getTextoAula();
+				disc = Disciplina.GetByCodigo(data.substring(1));
+				if (disc == null)
+					output = "FAILED";
+				else
+					output = disc.getTextoAula();
 				break;
 			case 't':
 				if (!data.substring(1).equals(password)) {

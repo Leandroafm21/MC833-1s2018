@@ -36,6 +36,8 @@ public class Disciplina {
     }
 
     public static Disciplina GetByCodigo(String codigo) {
+        if (_lista == null)
+            return null;
         for (Disciplina disc : _lista)
             if (disc.codigo.equalsIgnoreCase(codigo))
                 return disc;
