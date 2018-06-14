@@ -26,7 +26,7 @@ HandleCommand: recebe um datagrama contendo um caractere indicando uma operaçã
 Depois de setar corretamente a variável de ambiente CLASSPATH para o caminho até a pasta src (inclusive), execute:
 
 ```
->javac SubjectsDatabase.java Server.java
+>javac SubjectsDatabase.java Server.java Disciplina.java
 >javac Client.java UserTypePrompt.java PasswordPrompt.java MainInterface.java ResponseInterface.java
 ```
 

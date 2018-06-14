@@ -19,7 +19,7 @@ public class MainInterface extends Frame implements ActionListener {
 		if (userType == 't') {
 			userOptionsLabel.setText("O que o(a) Sr(a). gostaria de fazer?");
 		} else {
-			userOptionsLabel.setText("O que voc� gostaria de fazer?");
+			userOptionsLabel.setText("O que voce gostaria de fazer?");
 		}
 		add(userOptionsLabel);
 

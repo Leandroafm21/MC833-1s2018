@@ -14,6 +14,7 @@ public class Client {
 		Registry reg;
 		SubjectsDatabase stub = null;
 		char userType;
+		int tryNumber;
 		String teacherPassword;
 		String dataToSend;
 		String response = null;
@@ -37,21 +38,24 @@ public class Client {
 
 		ResponseInterface ri = new ResponseInterface();
 
+		tryNumber = 0;
 		if (userType == 't') {
-			PasswordPrompt pp = new PasswordPrompt();
-			while (pp.isVisible()) {
-				Thread.sleep(1);
+			while (response != null && response != "SUCCESS") {
+				PasswordPrompt pp = new PasswordPrompt(tryNumber);
+				while (pp.isVisible()) {
+					Thread.sleep(1);
+				}
+				teacherPassword = pp.getTeacherPassword();
+				pp.dispose();
+				System.out.println("[DEBUG] Teacher Password = " + teacherPassword);
+				try {
+					response = stub.HandleCommand(userType + teacherPassword);
+				} catch (Exception e) {
+					System.err.println("Client exception: " + e.toString());
+		            e.printStackTrace();
+				}
+				System.out.println("[DEBUG] Response Received = " + response);
 			}
-			teacherPassword = pp.getTeacherPassword();
-			pp.dispose();
-			System.out.println("[DEBUG] Teacher Password = " + teacherPassword);
-			try {
-				response = stub.HandleCommand(userType + teacherPassword);
-			} catch (Exception e) {
-				System.err.println("Client exception: " + e.toString());
-	            e.printStackTrace();
-			}
-			System.out.println("[DEBUG] Response Received = " + response);
 		} else {
 			try {
 				response = stub.HandleCommand(Character.toString(userType));
@@ -67,7 +71,6 @@ public class Client {
 			while (mi.isVisible()) {
 				Thread.sleep(1);
 			}
-			/* Usuario deu "Ok" */
 			dataToSend = mi.getData();
 			if (dataToSend.charAt(0) == '1') {
 				RegisterPrompt rp = new RegisterPrompt('s');

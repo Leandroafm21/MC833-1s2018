@@ -10,14 +10,17 @@ public class PasswordPrompt extends Frame implements ActionListener {
 	
 	private String teacherPassword;
 	
-	public PasswordPrompt() {
+	public PasswordPrompt(int tryNumber) {
 		setLayout(new FlowLayout());
 		
-		passwordLabel = new Label("passowrd");
+		passwordLabel = new Label("password");
 		passwordLabel.setText("Entre com sua senha:");
 		add(passwordLabel);
 		
 		passwordTextField = new TextField(22);
+		if (tryNumber > 0) {
+			passwordTextField.setText("Senha errada, tente novamente!");
+		}
 		add(passwordTextField);
 		
 		passwordButton = new Button("Ok");

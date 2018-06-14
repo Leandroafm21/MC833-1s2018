@@ -23,7 +23,7 @@ public class Server implements SubjectsDatabase {
 			case '1':
 				if (!isAuthenticated)
 				{
-					output = "FAILED";
+					output = "Erro: Voce precisa estar autenticado para realizar esta operacao.";
 				} else {
 					splitter = data.substring(1).split("_");
 					disc = new Disciplina(splitter[0], splitter[1], splitter[2]);
@@ -37,14 +37,14 @@ public class Server implements SubjectsDatabase {
 			case '3':
 				disc = Disciplina.GetByCodigo(data.substring(1));
 				if (disc == null)
-					output = "FAILED";
+					output = "Erro: Codigo de disciplina invalido ou disciplina nao encontrada.";
 				else
 					output = disc.getEmenta();
 				break;
 			case '4':
 				disc = Disciplina.GetByCodigo(data.substring(1));
 				if (disc == null)
-					output = "FAILED";
+					output = "Erro: Codigo de disciplina invalido ou disciplina nao encontrada.";
 				else
 					output = disc.getInfo();
 				break;
@@ -54,11 +54,11 @@ public class Server implements SubjectsDatabase {
 			case '6':
 				if (!isAuthenticated)
 				{
-						output = "FAILED";
+						output = "Erro: Voce precisa estar autenticado para realizar esta operacao.";
 				} else {
 						disc = Disciplina.GetByCodigo(data.substring(1,6));
 						if (disc == null)
-							output = "FAILED";
+							output = "Erro: Codigo de disciplina invalido ou disciplina nao encontrada.";
 						else {
 							disc.AtualizaTextoAula(data.substring(6));
 							output = "SUCCESS";
@@ -68,7 +68,7 @@ public class Server implements SubjectsDatabase {
 			case '7':
 				disc = Disciplina.GetByCodigo(data.substring(1));
 				if (disc == null)
-					output = "FAILED";
+					output = "Erro: Codigo de disciplina invalido ou disciplina nao encontrada.";
 				else
 					output = disc.getTextoAula();
 				break;
