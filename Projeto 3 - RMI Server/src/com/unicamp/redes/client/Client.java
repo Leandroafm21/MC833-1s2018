@@ -6,7 +6,7 @@ import java.rmi.registry.Registry;
 import com.unicamp.redes.server.SubjectsDatabase;
 
 public class Client {
-	
+
 	private Client() {}
 
 	public static void main(String args[]) throws InterruptedException {
@@ -17,7 +17,7 @@ public class Client {
 		String teacherPassword;
 		String dataToSend;
 		String response = null;
-		
+
 		try {
 			reg = LocateRegistry.getRegistry(host);
 			stub = (SubjectsDatabase) reg.lookup("Subjects");
@@ -26,7 +26,7 @@ public class Client {
             e.printStackTrace();
             System.exit(0);
 		}
-		
+
 		UserTypePrompt up = new UserTypePrompt();
 		while (up.isVisible()) {
 			Thread.sleep(1);
@@ -34,9 +34,9 @@ public class Client {
 		userType = up.getUserType();
 		up.dispose();
 		System.out.println("[DEBUG] User Type = " + userType);
-		
+
 		ResponseInterface ri = new ResponseInterface();
-		
+
 		if (userType == 't') {
 			PasswordPrompt pp = new PasswordPrompt();
 			while (pp.isVisible()) {
@@ -46,7 +46,7 @@ public class Client {
 			pp.dispose();
 			System.out.println("[DEBUG] Teacher Password = " + teacherPassword);
 			try {
-				response = stub.HandleAuthentication(userType + teacherPassword);
+				response = stub.HandleCommand(userType + teacherPassword);
 			} catch (Exception e) {
 				System.err.println("Client exception: " + e.toString());
 	            e.printStackTrace();
@@ -54,20 +54,20 @@ public class Client {
 			System.out.println("[DEBUG] Response Received = " + response);
 		} else {
 			try {
-				response = stub.HandleAuthentication(Character.toString(userType));
+				response = stub.HandleCommand(Character.toString(userType));
 			} catch (Exception e) {
 				System.err.println("Client exception: " + e.toString());
 	            e.printStackTrace();
 			}
 			System.out.println("[DEBUG] Response Received = " + response);
 		}
-			
+
 		MainInterface mi = new MainInterface(userType);
 		for ( ; ; ) {
 			while (mi.isVisible()) {
 				Thread.sleep(1);
 			}
-			/* Usuário deu "Ok" */
+			/* Usuario deu "Ok" */
 			dataToSend = mi.getData();
 			if (dataToSend.charAt(0) == '1') {
 				RegisterPrompt rp = new RegisterPrompt('s');
@@ -87,7 +87,7 @@ public class Client {
 			System.out.println("[DEBUG] Data to Send = " + dataToSend);
 			Thread.sleep(2000);
 			try {
-			    // Começar a contar tempo aqui
+			    // Comecar a contar tempo aqui
 				response = stub.HandleCommand(dataToSend);
 				// Terminar de contar tempo aqui
 			} catch (Exception e) {
