@@ -17,7 +17,7 @@ public class Client {
 		int tryNumber;
 		String teacherPassword;
 		String dataToSend;
-		String response = null;
+		String response = "0";
 
 		try {
 			reg = LocateRegistry.getRegistry(host);
@@ -40,7 +40,9 @@ public class Client {
 
 		tryNumber = 0;
 		if (userType == 't') {
-			while (response != null && response != "SUCCESS") {
+			while (Integer.parseInt(response) != 1) {
+				System.out.println("Response = " + response);
+				System.out.println(response != "SUCCESS");
 				PasswordPrompt pp = new PasswordPrompt(tryNumber);
 				while (pp.isVisible()) {
 					Thread.sleep(1);
@@ -90,9 +92,10 @@ public class Client {
 			System.out.println("[DEBUG] Data to Send = " + dataToSend);
 			Thread.sleep(2000);
 			try {
-			    // Comecar a contar tempo aqui
+				long t1 = System.nanoTime();
 				response = stub.HandleCommand(dataToSend);
-				// Terminar de contar tempo aqui
+				long t2 = System.nanoTime();
+				System.out.println("[DEBUG] Operation Time = " + (t2-t1)/1000 + " microseconds");
 			} catch (Exception e) {
 				System.err.println("Client exception: " + e.toString());
 	            e.printStackTrace();

@@ -9,16 +9,19 @@ public class Server implements SubjectsDatabase {
 	private static final String password = "1234";
 	private Boolean isAuthenticated;
 
-	public Server() { isAuthenticated = false; }
-
+	public Server() {
+		isAuthenticated = false;
+	}
 
 	public String HandleCommand(String data) throws RemoteException {
 		String[] splitter;
-		System.out.println("Received data: " + data);
+		System.out.println("[DEBUG] Received data: " + data);
 		String output = null;
 		Disciplina disc;
 		char op = data.charAt(0);
-		System.out.println("OP: " + op);
+		System.out.println("[DEBUG] OP: " + op);
+		
+		long t1 = System.nanoTime();
 		switch (op) {
 			case '1':
 				if (!isAuthenticated)
@@ -28,7 +31,7 @@ public class Server implements SubjectsDatabase {
 					splitter = data.substring(1).split("_");
 					disc = new Disciplina(splitter[0], splitter[1], splitter[2]);
 					Disciplina.AddToList(disc);
-					output = "SUCCESS";
+					output = "Disciplina adicionada com sucesso.";
 				}
 				break;
 			case '2':
@@ -61,7 +64,7 @@ public class Server implements SubjectsDatabase {
 							output = "Erro: Codigo de disciplina invalido ou disciplina nao encontrada.";
 						else {
 							disc.AtualizaTextoAula(data.substring(6));
-							output = "SUCCESS";
+							output = "Mensagem inserida com sucesso.";
 						}
 				}
 				break;
@@ -74,15 +77,17 @@ public class Server implements SubjectsDatabase {
 				break;
 			case 't':
 				if (!data.substring(1).equals(password)) {
-					output = "FAILED";
+					output = "0";
 				}
 				else
 				{
-					output = "SUCCESS";
+					output = "1";
 					isAuthenticated = true;
 				}
 				break;
 		}
+		long t2 = System.nanoTime();
+		System.out.println("[DEBUG] Database acessing time = " + (t2-t1)/1000 + " microseconds");
 
 		return output;
 	}
