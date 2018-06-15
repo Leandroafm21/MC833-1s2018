@@ -29,7 +29,7 @@ public class Server implements SubjectsDatabase {
 					output = "Erro: Voce precisa estar autenticado para realizar esta operacao.";
 				} else {
 					splitter = data.substring(1).split("_");
-					disc = new Disciplina(splitter[0], splitter[1], splitter[2]);
+					disc = new Disciplina(splitter[0], splitter[1], splitter[2], splitter[3]);
 					Disciplina.AddToList(disc);
 					output = "Disciplina adicionada com sucesso.";
 				}

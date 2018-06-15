@@ -6,6 +6,8 @@ import java.awt.event.*;
 public class RegisterPrompt extends Frame implements ActionListener {
 	private Label subjectCodeLabel;
 	private TextField subjectCodeTextField;
+	private Label subjectTitleLabel;
+	private TextField subjectTitleTextField;
 	private Label subjectSyllabusLabel;
 	private TextField subjectSyllabusTextField;
 	private Label subjectScheduleLabel;
@@ -28,6 +30,13 @@ public class RegisterPrompt extends Frame implements ActionListener {
 			subjectCodeTextField = new TextField(22);
 			subjectCodeTextField.setEditable(true);
 			add(subjectCodeTextField);
+			
+			subjectTitleLabel = new Label("subjectTitle");
+			subjectTitleLabel.setText("Titulo da disciplina:");
+			add(subjectTitleLabel);
+			subjectTitleTextField = new TextField(22);
+			subjectTitleTextField.setEditable(true);
+			add(subjectTitleTextField);
 
 			subjectSyllabusLabel = new Label("subjectSyllabus");
 			subjectSyllabusLabel.setText("Ementa da disciplina:");
@@ -43,7 +52,7 @@ public class RegisterPrompt extends Frame implements ActionListener {
 			subjectScheduleTextField.setEditable(true);
 			add(subjectScheduleTextField);
 
-			setSize(225, 240);
+			setSize(225, 295);
 		} else {
 			subjectMessageLabel = new Label("subjectMessage");
 			subjectMessageLabel.setText("Mensagem para a proxima aula:");
@@ -83,8 +92,9 @@ public class RegisterPrompt extends Frame implements ActionListener {
 				subjectCodeLabel.setForeground(Color.BLACK);
 				keepOpened = true;
 			} else {
-				rawData = subjectCodeTextField.getText() + '_' + subjectSyllabusTextField.getText() + '_' + subjectScheduleTextField.getText();
+				rawData = subjectCodeTextField.getText() + '_' + subjectTitleTextField.getText() + '_' + subjectSyllabusTextField.getText() + '_' + subjectScheduleTextField.getText();
 				subjectCodeTextField.setText("");
+				subjectTitleTextField.setText("");
 				subjectSyllabusTextField.setText("");
 				subjectScheduleTextField.setText("");
 			}

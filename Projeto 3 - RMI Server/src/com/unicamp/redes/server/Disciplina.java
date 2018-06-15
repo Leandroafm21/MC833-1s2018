@@ -51,7 +51,7 @@ public class Disciplina {
         return ret;
     }
 
-    public Disciplina(String codigo, String ementa, String horario)
+    public Disciplina(String codigo, String titulo, String ementa, String horario)
     {
         this.codigo = codigo;
         this.ementa = ementa;

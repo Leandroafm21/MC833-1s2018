@@ -41,8 +41,6 @@ public class Client {
 		tryNumber = 0;
 		if (userType == 't') {
 			while (Integer.parseInt(response) != 1) {
-				System.out.println("Response = " + response);
-				System.out.println(response != "SUCCESS");
 				PasswordPrompt pp = new PasswordPrompt(tryNumber);
 				while (pp.isVisible()) {
 					Thread.sleep(1);
